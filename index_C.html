@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>样片播放页面</title>
+  <style>
+    /* 全局样式重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #cccccc; /* 页面背景色（两侧空白区） */
+      font-family: "Microsoft Yahei", sans-serif;
+    }
+
+    /* 核心容器：PC端961px居中，移动端全屏 */
+    .container {
+      width: 961px;          /* 固定宽度改为961px */
+      margin: 0 auto;        /* 水平居中，两侧留白 */
+      background-color: #fff;
+      min-height: 100vh;
+      padding-bottom: 20px;
+    }
+
+    /* 顶部标题栏 */
+    .header {
+      background-color: #d90000;
+      color: #fff;
+      text-align: center;
+      padding: 24px 0;
+      font-size: 36px;
+      font-weight: bold;
+    }
+
+    /* 副标题 */
+    .sub-title {
+      text-align: center;
+      color: #999;
+      font-size: 28px;
+      padding: 20px 0;
+      border-bottom: 2px solid #eee;
+    }
+
+    /* 播放提示 */
+    .play-tip {
+      text-align: center;
+      color: #d90000;
+      font-size: 32px;
+      padding: 30px 0;
+    }
+
+    /* 样片列表：2列布局 + 层次感 */
+    .sample-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 0 20px;
+    }
+
+    /* 样片项样式（还原你原来的层次感：白色卡片+阴影+圆角） */
+    .sample-item {
+      text-align: center;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* 阴影 = 层次感 */
+      padding: 10px;
+      transition: box-shadow 0.2s;
+    }
+    .sample-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12); /*  hover 加深阴影 */
+    }
+
+    .sample-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+    }
+
+    .sample-name {
+      font-size: 28px;
+      color: #333;
+      margin: 15px 0 8px;
+    }
+
+    .sample-duration {
+      font-size: 24px;
+      color: #999;
+      margin-bottom: 15px;
+    }
+
+    /* 弹窗遮罩 */
+    .modal-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      display: none;
+    }
+
+    /* 弹窗内容 */
+    .modal-content {
+      background-color: #fff;
+      width: 90%;
+      max-width: 961px;
+      border-radius: 8px;
+      position: relative;
+      padding: 30px;
+    }
+
+    /* 统一的X关闭按钮 */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      font-size: 48px;
+      color: #333;
+      text-align: center;
+      line-height: 48px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+
+    .modal-title {
+      text-align: center;
+      font-size: 36px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .modal-media {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .modal-media img,
+    .modal-media video {
+      width: 100%;
+      height: auto;
+    }
+
+    .modal-duration {
+      text-align: center;
+      font-size: 28px;
+      color: #999;
+    }
+
+    /* 响应式适配：移动端全屏 */
+    @media (max-width: 961px) {
+      .container {
+        width: 100%;
+        padding: 0 10px;
+      }
+      .modal-content {
+        width: 95%;
+        max-width: 100%;
+        padding: 15px;
+      }
+      .header {
+        padding: 12px 0;
+        font-size: 18px;
+      }
+      .sub-title {
+        font-size: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .play-tip {
+        font-size: 16px;
+        padding: 15px 0;
+      }
+      .sample-list {
+        gap: 10px;
+        padding: 0 10px;
+      }
+      .sample-item {
+        padding: 8px;
+      }
+      .sample-name {
+        font-size: 14px;
+        margin: 8px 0 4px;
+      }
+      .sample-duration {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .close-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
+        line-height: 24px;
+        top: 10px;
+        right: 10px;
+      }
+      .modal-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .modal-media {
+        margin-bottom: 10px;
+      }
+      .modal-duration {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">播放样片</div>
+    <div class="sub-title">陆续更新</div>
+    <div class="play-tip">—— 点击播放 观看样片 ——</div>
+    
+    <!-- 样片列表（自动从CSV读取） -->
+    <div class="sample-list" id="sampleList"></div>
+  </div>
+
+  <!-- 播放弹窗 -->
+  <div class="modal-mask" id="modalMask">
+    <div class="modal-content">
+      <button class="close-btn" id="closeBtn">×</button>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-media" id="modalMedia">
+        <video controls>
+          <source src="" type="video/mp4">
+          您的浏览器不支持视频播放
+        </video>
+      </div>
+      <div class="modal-duration" id="modalDuration"></div>
+    </div>
+  </div>
+
+  <!-- 引入CSV解析库 -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    const sampleList = document.getElementById('sampleList');
+    const modalMask = document.getElementById('modalMask');
+    const closeBtn = document.getElementById('closeBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMedia = document.getElementById('modalMedia');
+    const modalDuration = document.getElementById('modalDuration');
+    const videoElement = modalMedia.querySelector('video');
+
+    // 读取CSV并渲染
+    Papa.parse('video_list.csv', {
+      download: true,
+      header: true,
+      encoding: 'utf-8',
+      transformHeader: function(header) {
+        if (header.includes('name')) return 'name';
+        if (header.includes('img_url')) return 'img_url';
+        if (header.includes('video_url')) return 'video_url';
+        if (header.includes('duration')) return 'duration';
+        return header;
+      },
+      complete: function(results) {
+        sampleList.innerHTML = '';
+        
+        // 倒序：最新添加的在最前面
+        const reversedData = results.data.reverse();
+
+        reversedData.forEach((item, index) => {
+          if (!item.name || !item.img_url || !item.video_url) return;
+
+          const serialNum = index + 1;
+          const durationText = /^\d+$/.test(item.duration) ? `${item.duration}秒` : item.duration;
+
+          const sampleItem = document.createElement('div');
+          sampleItem.className = 'sample-item';
+          sampleItem.dataset.video = item.video_url;
+
+          // 这里已经加上：编号：两个字
+          sampleItem.innerHTML = `
+            <img src="${item.img_url}" alt="${item.name}">
+            <div class="sample-name">编号：${serialNum} ${item.name}</div>
+            <div class="sample-duration">${durationText}</div>
+          `;
+
+          sampleList.appendChild(sampleItem);
+
+          sampleItem.addEventListener('click', () => {
+            modalTitle.textContent = `编号：${serialNum} ${item.name}`;
+            modalDuration.textContent = durationText;
+            videoElement.src = item.video_url;
+            modalMask.style.display = 'flex';
+            videoElement.play().catch(err => {});
+          });
+        });
+      },
+      error: function(err) {
+        console.log('读取CSV失败', err);
+      }
+    });
+
+    // 关闭弹窗
+    closeBtn.addEventListener('click', closeModal);
+    modalMask.addEventListener('click', (e) => {
+      if (e.target === modalMask) closeModal();
+    });
+    function closeModal() {
+      modalMask.style.display = 'none';
+      videoElement.pause();
+      videoElement.src = '';
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>
