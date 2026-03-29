@@ -4,60 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>样片播放页面</title>
-  <style>
+  <样式>
     /* 全局样式重置 */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    *  {
+      边距：0;
+      
+      盒模型：边框盒;
     }
 
-    body {
+    身体 {
       background-color: #cccccc; /* 页面背景色（两侧空白区） */
-      font-family: "Microsoft Yahei", sans-serif;
+      字体：“微软 Yahei”，无衬线;
     }
 
     /* 核心容器：PC端961px居中，移动端全屏 */
-    .container {
-      width: 961px;          /* 固定宽度改为961px */
-      margin: 0 auto;        /* 水平居中，两侧留白 */
-      background-color: #fff;
-      min-height: 100vh;
-      padding-bottom: 20px;
+    .容器 {
+      宽度：961像素；          /* 固定宽度改为961px */
+      边距：0 自动；        /* 水平居中，两侧留白 */
+      背景颜色: #fff;
+      最小高度：100vh;
+      
     }
 
     /* 顶部标题栏 */
-    .header {
-      background-color: #d90000;
-      color: #fff;
-      text-align: center;
-      padding: 24px 0;
-      font-size: 36px;
-      font-weight: bold;
+    .标题 {
+      背景颜色: #d90000;
+      颜色: #fff;
+      文本对齐：居中;
+       
+      字体大小：36px;
+      字体粗细：粗体;
     }
 
     /* 副标题 */
-    .sub-title {
-      text-align: center;
-      color: #999;
-      font-size: 28px;
-      padding: 20px 0;
-      border-bottom: 2px solid #eee;
+    .副标题 {
+      文本对齐：居中;
+      颜色: #999;
+      字体大小：28像素;
+       
+      下边框：2像素 实线 #eee;
     }
 
     /* 播放提示 */
-    .play-tip {
-      text-align: center;
-      color: #d90000;
-      font-size: 32px;
-      padding: 30px 0;
+    .播放提示 {
+      文本对齐：居中;
+      颜色: #d90000;
+      字体大小：32像素;
+       
     }
 
-    /* 样片列表：2列布局 + 层次感 */
-    .sample-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+    /* 样品列表：2列布局 + 层次感 */
+    .样本列表 {
+      显示：网格;
+      网格列模板：1fr 1fr;
+      间隙：20像素;
       padding: 0 20px;
     }
 
@@ -70,10 +70,10 @@
       border-radius: 4px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* 阴影 = 层次感 */
       padding: 10px;
-      transition: box-shadow 0.2s;
+      过渡：盒阴影 0.2秒；
     }
-    .sample-item:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12); /*  hover 加深阴影 */
+    .样本项目:悬停 {
+      box-shadow：0 4px 12px rgba(0,0,0,0.12); /*  悬停加深阴影 */
     }
 
     .sample-item img {
